@@ -1,6 +1,26 @@
 # Rando Pokédex
 
-Currently, the Lua script used to dump screenshots requires a custom build of DeSmuME that adds a Lua function for toggling display layers, so I wouldn't call this project ready for public consumption. The project also only supports Pokémon White. In theory, it should support all Gen 5 games (i.e., White, Black, White 2, and Black 2), but the memory addresses in the Lua script are hardcoded for White at the moment.
+This project is a web app, with a complementary Lua script, that displays information about a playthrough of Pokémon Black or White. Importantly, it does so in a way that supports randomizer runs. Since every randomized ROM is different &mdash; different move stats, different types, and even different sprite graphics &mdash; we can't just pull from established data sources to get information about Pokemon and their moves. Instead, we read directly from memory to get the information we need, supplemented with screenshots (triggered manually but captured and processed automatically) to get sprite images and fill in the gaps.
+
+The webapp provides a few different views in the end result. There's a customized stream overlay suitable for use as a Browser Source in OBS:
+
+![hud](doc/readme_01_hud.png)
+
+And there's also a web frontend that displays all the information that's collected so far. This includes a roster page, listing the details for all the Pokémon that have been captured:
+
+![roster](doc/readme_02_roster.png)
+
+...a Pokédex page, which lists an overview of all Pokémon and their types:
+
+![pokedex](doc/readme_03_pokedex.png)
+
+...and finally, a Moves page, which shows the randomized stats and types for all moves that captured Pokémon have learned.
+
+The webapp uses a database to store this information persistently. It runs a worker thread that watches for screenshots and memory dumps from the accompanying Lua script: when new data is received, it's decrypted, parsed, and processed, the results are fed into the webapp via an HTTP API, and the web pages update in real-time (via socket.io) to reflect the new information.
+
+## Caveats
+
+Currently, the Lua script used to dump screenshots requires a custom build of DeSmuME that adds a Lua function for toggling display layers, so I wouldn't call this project ready for public consumption.
 
 Building the frontend _(which is optional, since bundled Javascript is versioned in `static/dist`)_ requires NodeJS. Install NodeJS and npm, and then you should be able to run `npm run build` from the root directory.
 
