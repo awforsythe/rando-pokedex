@@ -1,0 +1,20 @@
+.pad-container {
+	width: 95%;
+	height: 24px;
+	text-align: center;
+	margin-left: 16px;
+	padding-left: 8px;
+	padding-right: 8px;
+	font-size: 0.8rem;
+}
+
+.pad-label {
+	font-weight: 500;
+}
+
+.pad-value {
+}
+
+.pad-flavor {
+	font-style: italic;
+}

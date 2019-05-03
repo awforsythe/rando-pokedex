@@ -1,0 +1,143 @@
+.type-badge {
+	display: inline-block;
+	height: 22px;
+	width: 72px;
+	margin: 2px;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: white;
+	text-shadow: 1px 1px 0 #555555;
+	text-align: center;
+	border: 1px solid black;
+	border-radius: 2px;
+}
+
+.type-badge-small {
+	margin: 0;
+	margin-top: 4px;
+}
+
+
+.type-badge-hybrid {
+	display: inline-flex;
+	height: 22px;
+	min-width: 72px;
+	margin: 2px;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: white;
+	text-shadow: 1px 1px 0 #555555;
+	text-align: center;
+}
+
+.hybrid-type-left, .hybrid-type-right {
+	display: inline-block;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.hybrid-type-left {
+	padding-left: 4px;
+	padding-right: 4px;
+	border-top-left-radius: 2px;
+	border-bottom-left-radius: 2px;
+	border-right: none;
+}
+
+.hybrid-type-right {
+	padding-left: 4px;
+	padding-right: 4px;
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+	border-left: none;
+}
+
+.type-badge-bug {
+	background-color: #aebe24;
+	border-color: #456d3c;
+}
+
+.type-badge-dark {
+	background-color: #755d4d;
+	border-color: #4d3c34;
+}
+
+.type-badge-dragon {
+	background-color: #7d65e7;
+	border-color: #4d3c96;
+}
+
+.type-badge-electric {
+	background-color: #ffc734;
+	border-color: #75551c;
+}
+
+.type-badge-fighting {
+	background-color: #a6553c;
+	border-color: #4d3c34;
+}
+
+.type-badge-fire {
+	background-color: #f75534;
+	border-color: #75240c;
+}
+
+.type-badge-flying {
+	background-color: #9eaef7;
+	border-color: #455596;
+}
+
+.type-badge-ghost {
+	background-color: #6565b6;
+	border-color: #4d3c55;
+}
+
+.type-badge-grass {
+	background-color: #7dcf55;
+	border-color: #456d3c;
+}
+
+.type-badge-ground {
+	background-color: #d7b65d;
+	border-color: #75551c;
+}
+
+.type-badge-ice {
+	background-color: #5dcfe7;
+	border-color: #455596;
+}
+
+.type-badge-normal {
+	background-color: #aea696;
+	border-color: #555555;
+}
+
+.type-badge-poison {
+	background-color: #b65da6;
+	border-color: #4d3c55;
+}
+
+.type-badge-psychic {
+	background-color: #ff75a6;
+	border-color: #6d3c3c;
+}
+
+.type-badge-rock {
+	background-color: #bea65d;
+	border-color: #75551c;
+}
+
+.type-badge-steel {
+	background-color: #aeaec7;
+	border-color: #555555;
+}
+
+.type-badge-unknown {
+	background-color: #a2a2a2;
+	border-color: #555555;
+}
+
+.type-badge-water {
+	background-color: #3c9eff;
+	border-color: #455596;
+}

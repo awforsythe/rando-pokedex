@@ -1,0 +1,8 @@
+.twitch-button {
+	background-color: #6441a4 !important;
+	border: 1px solid #6c4ba9 !important;
+}
+
+.twitch-button:hover {
+	background-color: #6c4ba9 !important;
+}

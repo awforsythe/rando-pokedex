@@ -1,0 +1,16 @@
+# Compiled python bytecode
+*.pyc
+__pycache__/*
+
+# JavaScript dependencies installed via npm install
+node_modules/*
+
+# Instance-specific configuration (including secret keys etc.)
+instance/*
+
+# Local sqlite3 database file used for testing
+pokemon.db
+
+# Transient data dumped from the game
+nds/dump/*
+!nds/dump/.do_not_delete

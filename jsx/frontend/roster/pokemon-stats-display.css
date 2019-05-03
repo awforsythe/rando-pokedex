@@ -1,0 +1,26 @@
+.psd-container {
+	display: flex;
+	width: 95%;
+	height: 24px;
+	margin-top: 8px;
+	margin-left: 16px;
+	padding-left: 8px;
+	padding-right: 8px;
+	background-color: #f2f2f2;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+
+.psd-label, .psd-value {
+	flex-grow: 1;
+	font-size: 0.8rem;
+}
+
+.psd-label {
+	font-weight: 500;
+	text-align: right;
+}
+
+.psd-value {
+	padding-left: 4px;
+}

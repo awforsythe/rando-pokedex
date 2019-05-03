@@ -1,0 +1,47 @@
+.pml-row {
+	cursor: pointer;
+}
+
+.pml-col-pp {
+	width: 30;
+	text-align: center;
+}
+
+.pml-col-pp-delim {
+	width: 10;
+	text-align: center;
+	color: #ccc;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.pml-col-pp-max {
+	width: 30;
+	text-align: center;
+}
+
+.pml-col-name {
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.pml-col-type {
+	width: 100;
+	padding: 0;
+}
+
+.pml-col-category {
+	width: 100;
+}
+
+.pml-col-power {
+	width: 60;
+}
+
+.pml-col-accuracy {
+	width: 60;
+}
+
+.pml-modal-description {
+	font-style: italic;
+}
