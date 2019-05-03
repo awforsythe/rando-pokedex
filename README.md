@@ -2,7 +2,7 @@
 
 This project is a web app, with a complementary Lua script, that displays information about a playthrough of Pokémon Black or White. Importantly, it does so in a way that supports randomizer runs. Since every randomized ROM is different &mdash; different move stats, different types, and even different sprite graphics &mdash; we can't just pull from established data sources to get information about Pokemon and their moves. Instead, we read directly from memory to get the information we need, supplemented with screenshots (triggered manually but captured and processed automatically) to get sprite images and fill in the gaps.
 
-The webapp provides a few different views in the end result. There's a customized stream overlay suitable for use as a Browser Source in OBS:
+The webapp provides a few different views as an end result. There's a customized stream overlay suitable for use as a Browser Source in OBS:
 
 ![hud](doc/readme_01_hud.png)
 
