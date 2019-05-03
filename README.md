@@ -16,7 +16,11 @@ And there's also a web frontend that displays all the information that's collect
 
 ...and finally, a Moves page, which shows the randomized stats and types for all moves that captured Pokémon have learned.
 
+![moves](doc/readme_04_moves.png)
+
 The webapp uses a database to store this information persistently. It runs a worker thread that watches for screenshots and memory dumps from the accompanying Lua script: when new data is received, it's decrypted, parsed, and processed, the results are fed into the webapp via an HTTP API, and the web pages update in real-time (via socket.io) to reflect the new information.
+
+At time of writing, a working example can be seen here: https://rando-pokedex.herokuapp.com
 
 ## Caveats
 
