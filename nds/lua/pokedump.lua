@@ -95,180 +95,152 @@ function button_b()
 	joypad.set(0, {B = 1})
 end
 
-Script = {running = false, frame = 0, end_frame = 10, steps = {}}
+local Task = require('task')
 
-function Script:add(func, delay)
-	self.steps[self.end_frame] = func
-	self.end_frame = self.end_frame + delay
-end
-
-function Script:start()
-	self.running = true
-	self.frame = 0
-end
-
-function Script:tick()
-	if self.running == true then
-		func = self.steps[self.frame]
-		if func ~= nil then
-			print(self.frame)
-			func()
-		end
-		self.frame = self.frame + 1
-		if self.frame >= self.end_frame then
-			self.running = false
-		end
-	end
-end
-
-local script = Script
+local task = Task.new(10, {'control', 'shift', 'F11'})
 local screen_change_delay = 60
 local move_load_delay = 10
 local move_delay_initial = 15
 local move_delay_end = 15
 
 -- capture stats screen for slot 0
-script:add(isolate_character, 2)
-script:add(screenshot('party_00_char'), 2)
-script:add(isolate_types, 2)
-script:add(screenshot('party_00_type'), 2)
-script:add(restore_all_layers, 2)
+task:add(isolate_character, 2)
+task:add(screenshot('party_00_char'), 2)
+task:add(isolate_types, 2)
+task:add(screenshot('party_00_type'), 2)
+task:add(restore_all_layers, 2)
 
 -- capture moves screen for slot 0
-script:add(dpad_right, screen_change_delay)
-script:add(screenshot('party_00_moves'), 2)
-script:add(button_a, move_delay_initial)
-script:add(movestats(0, 0), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(0, 1), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(0, 2), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(0, 3), 2)
-script:add(button_b, move_delay_end)
+task:add(dpad_right, screen_change_delay)
+task:add(screenshot('party_00_moves'), 2)
+task:add(button_a, move_delay_initial)
+task:add(movestats(0, 0), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(0, 1), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(0, 2), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(0, 3), 2)
+task:add(button_b, move_delay_end)
 
 -- capture moves screen for slot 1
-script:add(dpad_down, screen_change_delay)
-script:add(screenshot('party_01_moves'), 2)
-script:add(button_a, move_delay_initial)
-script:add(movestats(1, 0), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(1, 1), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(1, 2), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(1, 3), 2)
-script:add(button_b, move_delay_end)
+task:add(dpad_down, screen_change_delay)
+task:add(screenshot('party_01_moves'), 2)
+task:add(button_a, move_delay_initial)
+task:add(movestats(1, 0), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(1, 1), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(1, 2), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(1, 3), 2)
+task:add(button_b, move_delay_end)
 
 -- capture stats screen for slot 1
-script:add(dpad_left, screen_change_delay)
-script:add(isolate_character, 2)
-script:add(screenshot('party_01_char'), 2)
-script:add(isolate_types, 2)
-script:add(screenshot('party_01_type'), 2)
-script:add(restore_all_layers, 2)
+task:add(dpad_left, screen_change_delay)
+task:add(isolate_character, 2)
+task:add(screenshot('party_01_char'), 2)
+task:add(isolate_types, 2)
+task:add(screenshot('party_01_type'), 2)
+task:add(restore_all_layers, 2)
 
 -- capture stats screen for slot 2
-script:add(dpad_down, screen_change_delay)
-script:add(isolate_character, 2)
-script:add(screenshot('party_02_char'), 2)
-script:add(isolate_types, 2)
-script:add(screenshot('party_02_type'), 2)
-script:add(restore_all_layers, 2)
+task:add(dpad_down, screen_change_delay)
+task:add(isolate_character, 2)
+task:add(screenshot('party_02_char'), 2)
+task:add(isolate_types, 2)
+task:add(screenshot('party_02_type'), 2)
+task:add(restore_all_layers, 2)
 
 -- capture moves screen for slot 2
-script:add(dpad_right, screen_change_delay)
-script:add(screenshot('party_02_moves'), 2)
-script:add(button_a, move_delay_initial)
-script:add(movestats(2, 0), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(2, 1), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(2, 2), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(2, 3), 2)
-script:add(button_b, move_delay_end)
+task:add(dpad_right, screen_change_delay)
+task:add(screenshot('party_02_moves'), 2)
+task:add(button_a, move_delay_initial)
+task:add(movestats(2, 0), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(2, 1), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(2, 2), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(2, 3), 2)
+task:add(button_b, move_delay_end)
 
 -- capture moves screen for slot 3
-script:add(dpad_down, screen_change_delay)
-script:add(screenshot('party_03_moves'), 2)
-script:add(button_a, move_delay_initial)
-script:add(movestats(3, 0), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(3, 1), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(3, 2), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(3, 3), 2)
-script:add(button_b, move_delay_end)
+task:add(dpad_down, screen_change_delay)
+task:add(screenshot('party_03_moves'), 2)
+task:add(button_a, move_delay_initial)
+task:add(movestats(3, 0), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(3, 1), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(3, 2), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(3, 3), 2)
+task:add(button_b, move_delay_end)
 
 -- capture stats screen for slot 3
-script:add(dpad_left, screen_change_delay)
-script:add(isolate_character, 2)
-script:add(screenshot('party_03_char'), 2)
-script:add(isolate_types, 2)
-script:add(screenshot('party_03_type'), 2)
-script:add(restore_all_layers, 2)
+task:add(dpad_left, screen_change_delay)
+task:add(isolate_character, 2)
+task:add(screenshot('party_03_char'), 2)
+task:add(isolate_types, 2)
+task:add(screenshot('party_03_type'), 2)
+task:add(restore_all_layers, 2)
 
 -- capture stats screen for slot 4
-script:add(dpad_down, screen_change_delay)
-script:add(isolate_character, 2)
-script:add(screenshot('party_04_char'), 2)
-script:add(isolate_types, 2)
-script:add(screenshot('party_04_type'), 2)
-script:add(restore_all_layers, 2)
+task:add(dpad_down, screen_change_delay)
+task:add(isolate_character, 2)
+task:add(screenshot('party_04_char'), 2)
+task:add(isolate_types, 2)
+task:add(screenshot('party_04_type'), 2)
+task:add(restore_all_layers, 2)
 
 -- capture moves screen for slot 4
-script:add(dpad_right, screen_change_delay)
-script:add(screenshot('party_04_moves'), 2)
-script:add(button_a, move_delay_initial)
-script:add(movestats(4, 0), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(4, 1), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(4, 2), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(4, 3), 2)
-script:add(button_b, move_delay_end)
+task:add(dpad_right, screen_change_delay)
+task:add(screenshot('party_04_moves'), 2)
+task:add(button_a, move_delay_initial)
+task:add(movestats(4, 0), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(4, 1), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(4, 2), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(4, 3), 2)
+task:add(button_b, move_delay_end)
 
 -- capture moves screen for slot 5
-script:add(dpad_down, screen_change_delay)
-script:add(screenshot('party_05_moves'), 2)
-script:add(button_a, move_delay_initial)
-script:add(movestats(5, 0), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(5, 1), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(5, 2), 2)
-script:add(dpad_down, move_load_delay)
-script:add(movestats(5, 3), 2)
-script:add(button_b, move_delay_end)
+task:add(dpad_down, screen_change_delay)
+task:add(screenshot('party_05_moves'), 2)
+task:add(button_a, move_delay_initial)
+task:add(movestats(5, 0), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(5, 1), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(5, 2), 2)
+task:add(dpad_down, move_load_delay)
+task:add(movestats(5, 3), 2)
+task:add(button_b, move_delay_end)
 
 -- capture stats screen for slot 5
-script:add(dpad_left, screen_change_delay)
-script:add(isolate_character, 2)
-script:add(screenshot('party_05_char'), 2)
-script:add(isolate_types, 2)
-script:add(screenshot('party_05_type'), 2)
-script:add(restore_all_layers, 2)
+task:add(dpad_left, screen_change_delay)
+task:add(isolate_character, 2)
+task:add(screenshot('party_05_char'), 2)
+task:add(isolate_types, 2)
+task:add(screenshot('party_05_type'), 2)
+task:add(restore_all_layers, 2)
 
 -- write out a flag so we know all screenshots are finished updating
-script:add(function() write_flag(SCREENSHOT_WRITEFLAG_PATH) end, 2)
+task:add(function() write_flag(SCREENSHOT_WRITEFLAG_PATH) end, 2)
 
 function loop()
 	current_time = os.time()
-	if script.running == false and current_time >= last_dump_time + DUMP_INTERVAL then
+	if not task.running and current_time >= last_dump_time + DUMP_INTERVAL then
 		dump_memory(PARTY_OFFSET, PARTY_DUMP_SIZE, PARTY_OUTPUT_PATH)
 		dump_memory(BATTLE_OFFSET, BATTLE_DUMP_SIZE, BATTLE_OUTPUT_PATH)
 		write_flag(DUMP_WRITEFLAG_PATH)
 		last_dump_time = current_time
 	end
 
-	keys = input.get()
-	if script.running == false and keys['F11'] == true and keys['control'] == true and keys['shift'] == true then
-		script:start()
-	end
-	script:tick()
+	task:tick()
 end
 
 gui.register(loop)
