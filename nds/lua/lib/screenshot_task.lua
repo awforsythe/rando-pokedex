@@ -1,7 +1,6 @@
 local Task = require('task')
 local util = require('util')
 
-local MOVE_STATS_OFFSET = 0x02146556
 local MOVE_STATS_SIZE = 3
 
 local SCREEN_CHANGE_DELAY = 60
@@ -35,11 +34,11 @@ function dpad_down() joypad.set(0, {down = 1}) end
 function button_a() joypad.set(0, {A = 1}) end
 function button_b() joypad.set(0, {B = 1}) end
 
-function screenshot_task(hotkey, output_dir, writeflag_filename)
+function screenshot_task(hotkey, output_dir, writeflag_filename, move_stats_offset)
 
 	function screenshot(filename)
 		return function()
-			file = io.open(output_dir .. filename .. '.gd')
+			local file = io.open(output_dir .. filename .. '.gd', 'wb')
 			file:write(gui.gdscreenshot('bottom'))
 			io.close(file)
 		end
@@ -48,14 +47,12 @@ function screenshot_task(hotkey, output_dir, writeflag_filename)
 	function movestats(char_index, move_index)
 		return function()
 			local filename = 'party_0' .. tostring(char_index) .. '_move_0' .. tostring(move_index) .. '.bin'
-			util.dump_memory(MOVE_STATS_OFFSET, MOVE_STATS_SIZE, output_dir .. filename)
+			util.dump_memory(move_stats_offset, MOVE_STATS_SIZE, output_dir .. filename)
 		end
 	end
 
 	function write_flag()
-		return function()
-			util.write_flag(output_dir .. writeflag_filename)
-		end
+		util.write_flag(output_dir .. writeflag_filename)
 	end
 
 	local task = Task.new(10, hotkey)

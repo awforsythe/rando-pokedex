@@ -1,8 +1,8 @@
 util = {}
 
 function util.dump_memory(offset, size, output_path)
-	bytes = memory.readbyterange(offset, size)
-	file = io.open(output_path, 'wb')
+	local bytes = memory.readbyterange(offset, size)
+	local file = io.open(output_path, 'wb')
 	for k, v in pairs(bytes) do
 		file:write(string.char(v))
 	end
@@ -10,7 +10,7 @@ function util.dump_memory(offset, size, output_path)
 end
 
 function util.write_flag(path)
-	file = io.open(path, 'w')
+	local file = io.open(path, 'w')
 	file:write('\n')
 	io.close(file)
 end
