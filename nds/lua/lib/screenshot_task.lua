@@ -8,25 +8,43 @@ local MOVE_LOAD_DELAY = 10
 local MOVE_DELAY_INITIAL = 15
 local MOVE_DELAY_END = 15
 
+--- Aborts with an error if gui.togglelayer is not exposed.
+-- This is a custom function added to DeSmuME in a custom build made for this script.
+-- It is not currently avaiable in any public build of DeSmuME.
+-- If building DeSmuME from source, see README.md for the details of the changes.
+function check_togglelayer_func()
+	local f = gui.togglelayer
+	if f == nil then
+		error('This build of DeSmuME is not supported. In fact, no publicly-available build of DeSmuME is currently supported. Please see the README for more information.')
+	end
+end
+
+--- Starting from all layers visible, isolates the character against a blank green background.
 function isolate_character()
+	check_togglelayer_func()
 	gui.togglelayer(0, 1)
 	gui.togglelayer(0, 2)
 	gui.togglelayer(0, 3)
 	gui.togglelayer(0, 4)
 end
 
+--- Starting from isolate_character(), hides the character and unhides the type badge.
 function isolate_types()
+	check_togglelayer_func()
 	gui.togglelayer(0, 0)
 	gui.togglelayer(0, 4)
 end
 
+--- Starting from isolate_types(), returns to a state where all layers are visible.
 function restore_all_layers()
+	check_togglelayer_func()
 	gui.togglelayer(0, 0)
 	gui.togglelayer(0, 1)
 	gui.togglelayer(0, 2)
 	gui.togglelayer(0, 3)
 end
 
+--- Sets DS input states.
 function dpad_left() joypad.set(0, {left = 1}) end
 function dpad_right() joypad.set(0, {right = 1}) end
 function dpad_up() joypad.set(0, {up = 1}) end
@@ -34,8 +52,24 @@ function dpad_down() joypad.set(0, {down = 1}) end
 function button_a() joypad.set(0, {A = 1}) end
 function button_b() joypad.set(0, {B = 1}) end
 
+--- Returns a Task object that writes out screenshots and memory dumps when the specified hotkey is pressed.
+--
+-- This task is meant to be run when viewing the Summary screen for the first
+-- Pokemon in the party, looking at the stats rather than the move list. The
+-- cycles through each of the six Pokemon, and for each one it writes out:
+--
+--   party_%02d_char.gd - The character sprite on a green background
+--   party_%02d_type.gd - The badge that indicates the Pokemon's type(s)
+--   party_%02d_moves.gd - The list of moves, showing the moves' type(s)
+--   party_%02d_move_%02d.bin - Files with 3 bytes reflecting the stats of each move
+--
+-- Upon completion, the task writes out a .writeflag file, letting the
+-- accompanying Python application know that these files are updated and have
+-- finished being written.
+--
 function screenshot_task(hotkey, output_dir, writeflag_filename, move_stats_offset)
 
+	-- Thunk to create a screenshot with the given filename
 	function screenshot(filename)
 		return function()
 			local file = io.open(output_dir .. filename .. '.gd', 'wb')
@@ -44,6 +78,7 @@ function screenshot_task(hotkey, output_dir, writeflag_filename, move_stats_offs
 		end
 	end
 
+	-- Thunk to dump the tiny region of memory that contains the stats for the currently-selected move
 	function movestats(char_index, move_index)
 		return function()
 			local filename = 'party_0' .. tostring(char_index) .. '_move_0' .. tostring(move_index) .. '.bin'
@@ -51,6 +86,7 @@ function screenshot_task(hotkey, output_dir, writeflag_filename, move_stats_offs
 		end
 	end
 
+	-- Thunk to write out a writeflag with the correct name
 	function write_flag()
 		util.write_flag(output_dir .. writeflag_filename)
 	end
