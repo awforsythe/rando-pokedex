@@ -36,41 +36,96 @@ The Lua script run by DeSmuME simply dumps memory and screenshots to disk. The a
 
 ## DeSmuME modification
 
-In the future I might be able to find a way to grab sprites and type data without extra Lua functionality, or I might submit the requisite Lua changes to the maintainers of DeSmuME. In the meantime, just for posterity, here's a rundown of what I did to add a custom Lua function to DeSmuME.
+This `git diff` output describes the changes made to DeSmuME to add the `gui.setlayermask` function, which allows this project's Lua script to procedurally toggle display layers before taking screenshots. Note that this change is only supported in the Windows version of DeSmuME, since each platform has an entirely separate codebase for its GUI frontend, and display layers visibility is tightly coupled to the frontend.
 
-After cloning or downloading the DeSmuME source, edit `src/lua-engine.cpp`. Add `#include "display.h"` to the list of project includes, and in the `guilib` array, add `{"togglelayer", gui_togglelayer},` just above the line for `gui_gdscreenshot`. Then, above `DEFINE_LUA_FUNCTION(gui_gdscreenshot, "[whichScreen='both']")`, add this function definition:
+```diff
+diff --git desmume/src/frontend/windows/display.cpp desmume/src/frontend/windows/display.cpp
+index a538bb3..ce5c04d 100644
+--- desmume/src/frontend/windows/display.cpp
++++ desmume/src/frontend/windows/display.cpp
+@@ -968,3 +968,28 @@ void TwiddleLayer(UINT ctlid, int core, int layer)
+    gpu->SetLayerEnableState(layer, newLayerState);
+    MainWindow->checkMenu(ctlid, newLayerState);
+ }
++
++void SetLayerMasks(int mainEngineMask, int subEngineMask)
++{
++   static const size_t numCores = sizeof(CommonSettings.dispLayers) / sizeof(CommonSettings.dispLayers[0]);
++   static const size_t numLayers = sizeof(CommonSettings.dispLayers[0]) / sizeof(CommonSettings.dispLayers[0][0]);
++   static const UINT ctlids[numCores][numLayers] = {
++       {IDM_MBG0, IDM_MBG1, IDM_MBG2, IDM_MBG3, IDM_MOBJ},
++       {IDM_SBG0, IDM_SBG1, IDM_SBG2, IDM_SBG3, IDM_SOBJ},
++   };
++
++   for (int core = 0; core < 2; core++)
++   {
++       GPUEngineBase *gpu = (GPUEngineID)core == GPUEngineID_Main ? (GPUEngineBase *)GPU->GetEngineMain() : (GPUEngineBase *)GPU->GetEngineSub();
++       const int mask = core == 0 ? mainEngineMask : subEngineMask;
++       for (size_t layer = 0; layer < numLayers; layer++)
++       {
++           const bool newLayerState = (mask >> layer) & 0x01 != 0;
++           if (newLayerState != CommonSettings.dispLayers[core][layer])
++           {
++               gpu->SetLayerEnableState(layer, newLayerState);
++               MainWindow->checkMenu(ctlids[core][layer], newLayerState);
++           }
++       }
++   }
++}
+diff --git desmume/src/frontend/windows/display.h desmume/src/frontend/windows/display.h
+index ea3662b..1c099c0 100644
+--- desmume/src/frontend/windows/display.h
++++ desmume/src/frontend/windows/display.h
+@@ -105,5 +105,6 @@ FORCEINLINE void ServiceDisplayThreadInvocations()
+ 
+ void UpdateWndRects(HWND hwnd, RECT* newClientRect = NULL);
+ void TwiddleLayer(UINT ctlid, int core, int layer);
++void SetLayerMasks(int mainEngineMask, int subEngineMask);
+ 
+ #endif
+\ No newline at end of file
+diff --git desmume/src/lua-engine.cpp desmume/src/lua-engine.cpp
+index a75fdbe..9252711 100644
+--- desmume/src/lua-engine.cpp
++++ desmume/src/lua-engine.cpp
+@@ -28,6 +28,7 @@
+    #include "frontend/windows/main.h"
+    #include "frontend/windows/video.h"
+    #include "frontend/windows/resource.h"
++   #include "frontend/windows/display.h"
+ #else
+    // TODO: define appropriate types for menu
+    typedef void* PlatformMenu;
+@@ -3278,6 +3279,20 @@ DEFINE_LUA_FUNCTION(gui_settransparency, "transparency_4_to_0")
+    return 0;
+ }
+ 
++// gui.setlayermask(int top, int bottom)
++// enables or disables display layers for each screen according to the bitfields provided
++// e.g. 31 (11111) shows all layers; 0 (00000) hides all layers; 16 (10000) shows only the object layer (layer 4)
++// this function is only supported by the windows frontend.
++DEFINE_LUA_FUNCTION(gui_setlayermask, "top,bottom")
++{
++#if defined(WIN32)
++   lua_Integer top = luaL_checkint(L, 1);
++   lua_Integer bottom = luaL_checkint(L, 2);
++   SetLayerMasks(top, bottom);
++#endif
++   return 0;
++}
++
+ // takes a screenshot and returns it in gdstr format
+ // example: gd.createFromGdStr(gui.gdscreenshot()):png("outputimage.png")
+ DEFINE_LUA_FUNCTION(gui_gdscreenshot, "[whichScreen='both']")
+@@ -4861,6 +4876,7 @@ static const struct luaL_reg guilib [] =
+    {"transparency", gui_settransparency},
+    {"popup", gui_popup},
+    {"parsecolor", gui_parsecolor},
++   {"setlayermask", gui_setlayermask},
+    {"gdscreenshot", gui_gdscreenshot},
+    {"gdoverlay", gui_gdoverlay},
+    {"redraw", emu_redraw}, // some people might think of this as more of a GUI function
 
-    DEFINE_LUA_FUNCTION(gui_togglelayer, "screen,layer")
-    {
-        lua_Integer screen = luaL_checkint(L, 1);
-        lua_Integer layer = luaL_checkint(L, 2);
-        if (screen == 0)
-        {
-            switch (layer)
-            {
-                case 0: TwiddleLayer(IDM_MBG0, 0, 0); break;
-                case 1: TwiddleLayer(IDM_MBG1, 0, 1); break;
-                case 2: TwiddleLayer(IDM_MBG2, 0, 2); break;
-                case 3: TwiddleLayer(IDM_MBG3, 0, 3); break;
-                case 4: TwiddleLayer(IDM_MOBJ, 0, 4); break;
-                default:
-                    break;
-            }
-        }
-        else if (screen == 1)
-        {
-            switch (layer)
-            {
-                case 0: TwiddleLayer(IDM_SBG0, 1, 0); break;
-                case 1: TwiddleLayer(IDM_SBG1, 1, 1); break;
-                case 2: TwiddleLayer(IDM_SBG2, 1, 2); break;
-                case 3: TwiddleLayer(IDM_SBG3, 1, 3); break;
-                case 4: TwiddleLayer(IDM_SOBJ, 1, 4); break;
-                default:
-                    break;
-            }
-        }
-        return 0;
-    }
+```
 
-Then build in Release configuration from `src/frontend/windows/DeSmuME.sln` (or the equivalent for your platform). The executable in `src/frontend/windows/__bins` is the one you should use to run `pokedump.lua`.
+If you're comfortable making the changes yourself: clone the DeSmuME source, make the listed changes to `display.h`, `display.cpp`, and `lua-engine.cpp`, then build in Release configuration from `src/frontend/windows/DeSmuME.sln` and use the executable in `src/frontend/windows/__bins`.

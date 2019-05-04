@@ -8,40 +8,33 @@ local MOVE_LOAD_DELAY = 10
 local MOVE_DELAY_INITIAL = 15
 local MOVE_DELAY_END = 15
 
---- Aborts with an error if gui.togglelayer is not exposed.
+--- Aborts with an error if gui.setlayermask is not exposed.
 -- This is a custom function added to DeSmuME in a custom build made for this script.
 -- It is not currently avaiable in any public build of DeSmuME.
 -- If building DeSmuME from source, see README.md for the details of the changes.
-function check_togglelayer_func()
-	local f = gui.togglelayer
+function check_setlayermask_func()
+	local f = gui.setlayermask
 	if f == nil then
 		error('This build of DeSmuME is not supported. In fact, no publicly-available build of DeSmuME is currently supported. Please see the README for more information.')
 	end
 end
 
---- Starting from all layers visible, isolates the character against a blank green background.
+--- Disables all main screen layers except BG0, which contains the character sprite.
 function isolate_character()
-	check_togglelayer_func()
-	gui.togglelayer(0, 1)
-	gui.togglelayer(0, 2)
-	gui.togglelayer(0, 3)
-	gui.togglelayer(0, 4)
+	check_setlayermask_func()
+	gui.setlayermask(1, 31) -- 00001, 11111
 end
 
---- Starting from isolate_character(), hides the character and unhides the type badge.
+--- Disables all main screen layers except OBJ, which contains the type graphics.
 function isolate_types()
-	check_togglelayer_func()
-	gui.togglelayer(0, 0)
-	gui.togglelayer(0, 4)
+	check_setlayermask_func()
+	gui.setlayermask(16, 31) -- 10000, 11111
 end
 
---- Starting from isolate_types(), returns to a state where all layers are visible.
+--- Enables all screen layers.
 function restore_all_layers()
-	check_togglelayer_func()
-	gui.togglelayer(0, 0)
-	gui.togglelayer(0, 1)
-	gui.togglelayer(0, 2)
-	gui.togglelayer(0, 3)
+	check_setlayermask_func()
+	gui.setlayermask(31, 31) -- 11111, 11111
 end
 
 --- Sets DS input states.
